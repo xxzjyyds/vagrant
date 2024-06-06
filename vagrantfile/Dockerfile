@@ -66,4 +66,4 @@ VOLUME /var/www/vagrantfile/private
 
 USER www-data
 
-CMD ["apache2-foreground"]
+CMD ["/var/www/vagrantfile/environment.sh"]
