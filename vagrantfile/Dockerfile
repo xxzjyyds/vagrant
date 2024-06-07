@@ -13,11 +13,14 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN docker-php-ext-install zip
 RUN docker-php-ext-enable zip
 
-RUN git clone https://github.com/xxzjyyds/vagrantfile.git /var/www/vagrantfile/
+RUN git clone https://github.com/filegator/filegator.git /var/www/vagrantfile/
 COPY vagrantfile/VagrantFile_env.sh /var/www/vagrantfile/environment.sh
+COPY vagrantfile/VagrantFile_favicon.ico /var/www/vagrantfile/dist/favicon.ico
+COPY vagrantfile/VagrantFile_logo.png /var/www/vagrantfile/dist/img/logo.png
+COPY vagrantfile/VagrantFile_logo.svg /var/www/vagrantfile/dist/img/logo.svg
 WORKDIR "/var/www/vagrantfile/"
 ENV FILE_PATH=configuration.php
-RUN cp configuration_sample.php $FILE_PATH && chmod +x environment.sh
+RUN cp configuration_sample.php $FILE_PATH && sed -i "s/100 \* 1024 \* 1024, \/\/ 100MB/20 \* 1024 \* 1024 \* 1024, \/\/ 20GB/g" $FILE_PATH  && sed -i "s/https:\/\/filegator.io\/filegator_logo.svg/img\/logo.png/g" $FILE_PATH && sed -i "s/FileGator/VagrantFile/g" $FILE_PATH && chmod +x environment.sh
 RUN composer install
 RUN composer require league/flysystem-sftp:^1.0 -W
 RUN composer require league/flysystem-aws-s3-v3:^1.0 -W
